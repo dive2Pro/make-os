@@ -1,0 +1,1 @@
+..\z_tools\nask.exe ipl.nas os.img
