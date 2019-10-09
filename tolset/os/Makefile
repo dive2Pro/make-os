@@ -9,9 +9,11 @@ default :
 ipl.bin : ipl.nas Makefile
 	../z_tools/nask.exe ipl.nas ipl.bin ipl.lst
 
-helloos.img : ipl.bin Makefile
-	../z_tools/edimg.exe   imgin:../z_tools/fdimg0at.tek \
-		wbinimg src:ipl.bin len:512 from:0 to:0   imgout:helloos.img
+# 这里的空格要注意，要直接定格换行
+os.img : ipl.bin Makefile
+	../z_tools/edimg.exe\
+	imgin:../z_tools/fdimg0at.tek \
+	wbinimg src:ipl.bin len:512 from:0 to:0   imgout:os.img  
 
 # 其他指令
 
@@ -19,16 +21,16 @@ asm :
 	../z_tools/make.exe -r ipl.bin
 
 img :
-	../z_tools/make.exe -r helloos.img
+	../z_tools/make.exe -r os.img
 
 run :
 	../z_tools/make.exe img
-	copy helloos.img ..\z_tools\qemu\fdimage0.bin
+	copy os.img ..\z_tools\qemu\fdimage0.bin
 	../z_tools/make.exe -C ../z_tools/qemu
 
 install :
 	../z_tools/make.exe img
-	../z_tools/imgtol.com w a: helloos.img
+	../z_tools/imgtol.com w a: os.img
 
 clean :
 	-del ipl.bin
@@ -36,4 +38,4 @@ clean :
 
 src_only :
 	../z_tools/make.exe clean
-	-del helloos.img
+	-del os.img

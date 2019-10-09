@@ -45,7 +45,7 @@ fin:
 
 msg:
         DB      0x0a, 0x0a      ; »»ÐÐ2´Î
-        DB      "hello, world"
+        DB      "OH, My Goods friend"
         DB      0x0a            ; »»ÐÐ
         DB      0
 
