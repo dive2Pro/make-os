@@ -1,6 +1,7 @@
 CYLS	EQU		10
 		ORG		0x7c00
-		 10         JMP        entry
+		
+		JMP        entry
 		DB        0x90
 		DB        "HARIBOTE"        ; freeparam �����������ƿ�����������ַ�����8�ֽڣ�
 		DW        512                ; ÿ��������sector���Ĵ�С������Ϊ512�ֽڣ�
@@ -22,6 +23,13 @@ CYLS	EQU		10
 		RESB    18                ; �ȿճ�18�ֽ�
 
 entry:
+		MOV		AX,0
+		MOV		SS,AX
+		MOV		SP,0x7c00
+		MOV 	DS,AX
+
+
+
 		MOV		AX,0x0820
 		MOV		ES,AX
 		MOV		CH,0
@@ -32,7 +40,7 @@ readloop:
 		MOV		SI, 0
 
 retry:
-		MOV		AH, 0x02
+		MOV		AH, 0x02		; 读入磁盘
 		MOV		AL, 1
 		MOV		BX,0
 		MOV		DL,0x00
@@ -47,17 +55,25 @@ retry:
 		INT		0x13
 		JMP		retry
 
-fin:
-        HLT                     ; ��CPUֹͣ���ȴ�ָ��
-        JMP     fin             ; ����ѭ��
 
 next:
 		MOV		AX,ES
 		ADD		AX,0x0020
 		MOV		ES,AX
+
 		ADD		CL,1
 		CMP		CL,18
 		JBE		readloop		; <=
+		MOV		CL,1
+		ADD		DH, 1
+		CMP		DH,2
+		JB		readloop
+		MOV		DH,0
+		ADD		CH,1
+		CMP		CH,CYLS
+		JB		readloop
+		
+		JMP		0xc200
 error:
 		MOV		SI, msg
 putloop:
@@ -70,6 +86,9 @@ putloop:
         MOV     BX,15           ; ָ���ַ���ɫ
         INT     0x10            ; �����Կ�BIOS
         JMP     putloop
+fin:
+        HLT                     ; ��CPUֹͣ���ȴ�ָ��
+        JMP     fin             ; ����ѭ��
 
 msg:
         DB      0x0a, 0x0a      ; ����2��
